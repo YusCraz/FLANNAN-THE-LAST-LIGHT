@@ -1,0 +1,21 @@
+# Tool used to build and install our Python package.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+# Basic project information.
+[project]
+name = "flannan-the-last-light"
+version = "0.1.0"
+description = "An interactive horror mystery with a Python story engine."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+# Create a terminal command that starts our game.
+[project.scripts]
+flannan = "flannan.cli:run_game"
+
+# Find Python packages inside the src directory.
+[tool.setuptools.packages.find]
+where = ["src"]
