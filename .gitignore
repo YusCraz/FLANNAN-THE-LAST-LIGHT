@@ -1,0 +1,32 @@
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Local virtual environments
+.venv/
+venv/
+
+# Private environment configuration
+.env
+.env.*
+!.env.example
+
+# Test and analysis caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Python build output
+build/
+dist/
+*.egg-info/
+
+# Local logs
+*.log
+
+# Operating system files
+.DS_Store
+Thumbs.db
