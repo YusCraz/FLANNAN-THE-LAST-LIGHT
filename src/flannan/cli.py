@@ -1,64 +1,71 @@
-"""Provide a terminal interface for playing the story."""
+"""Play FLANNAN with instant transitions and background AI."""
 
-from .engine import apply_choice
-from .state import create_game_state
+import logging
+
+from .session import FastSession
 from .story import SCENES
 
 
-def show_scene(game_state):
-    """Display the current scene and its available choices."""
+def show_scene(session):
+    """Display the story and choices without development labels."""
 
-    # Look up the scene using the player's current position.
-    scene = SCENES[game_state["scene"]]
+    scene = SCENES[session.state["scene"]]
 
     print(f"\n--- {scene['title']} ---")
-    print(scene["narration"])
+    print(session.presentation["narration"])
     print()
 
-    # Display each keyword alongside its description.
     for keyword, choice in scene["choices"].items():
         print(f"[{keyword}] {choice['label']}")
 
 
 def run_game():
-    """Start a playthrough and process choices until it ends."""
+    """Play the story without waiting for AI responses."""
 
-    # Create fresh memory for this playthrough.
-    game_state = create_game_state()
+    # Keep actual API warnings visible so failures aren't hidden.
+       # Write technical warnings to a local log instead of the game screen.
+    logging.basicConfig(
+        filename="flannan.log",
+        encoding="utf-8",
+        level=logging.WARNING,
+        format="%(asctime)s %(levelname)s: %(message)s",
+        force=True,
+    )
+    session = FastSession()
 
-    print("FLANNAN: THE LAST LIGHT")
-    print("Type a displayed keyword to choose, or EXIT to quit.")
+    try:
+        print("FLANNAN: THE LAST LIGHT")
+        print("Type a displayed keyword, or EXIT to quit.")
 
-    while True:
-        # Display the opening scene or the scene we just entered.
-        show_scene(game_state)
-
-        # An empty choices dictionary means this branch stops here.
-        if not SCENES[game_state["scene"]]["choices"]:
-            print("You have reached the end of the current story branch.")
-            break
-
-        # Keep asking until the player submits a valid choice.
         while True:
-            try:
-                user_choice = input("\nYour choice: ")
-            except (KeyboardInterrupt, EOFError):
-                # Exit cleanly if the player interrupts terminal input.
-                print("\nClosing the game.")
-                return
+            # Show the scene immediately.
+            show_scene(session)
 
-            # EXIT is an interface command, not a story decision.
-            if user_choice.strip().upper() == "EXIT":
-                print("Closing the game.")
-                return
-
-            # The engine validates the choice and updates the state.
-            if apply_choice(game_state, user_choice):
+            if not SCENES[session.state["scene"]]["choices"]:
+                print("End of playthrough.")
                 break
 
-            print("Invalid choice. Enter one of the displayed keywords.")
+            # Prepare upcoming narration while the player reads.
+            session.prepare_choices()
+
+            while True:
+                user_choice = input("\nYour choice: ")
+
+                if user_choice.strip().upper() == "EXIT":
+                    print("Closing the game.")
+                    return
+
+                if session.choose(user_choice):
+                    break
+
+                print("Invalid choice. Use one of the displayed keywords.")
+
+    except (KeyboardInterrupt, EOFError):
+        print("\nClosing the game.")
+
+    finally:
+        session.close()
 
 
-# Start the interface only when this module is run directly.
 if __name__ == "__main__":
     run_game()
