@@ -1,0 +1,20 @@
+{
+  "missing_report": "assets/scenes/missing_report.png",
+  "case_report": "assets/scenes/case_report.png",
+  "captain_warning": "assets/scenes/captain_warning.png",
+  "crossing": "assets/scenes/crossing.png",
+  "radio_identity": "assets/scenes/radio_identity.png",
+  "lighthouse_exterior": "assets/scenes/lighthouse_exterior.png",
+  "upper_window": "assets/scenes/upper_window.png",
+  "radio_warning": "assets/scenes/radio_warning.png",
+  "entry_hall": "assets/scenes/entry_hall.png",
+  "keeper_notebook": "assets/scenes/keeper_notebook.png",
+  "west_landing": "assets/scenes/west_landing.png",
+  "captain_call": "assets/scenes/captain_call.png",
+  "staircase": "assets/scenes/staircase.png",
+  "door_voice": "assets/scenes/door_voice.png",
+  "lantern_room": "assets/scenes/lantern_room.png",
+  "ending_departure": "assets/scenes/ending_departure.png",
+  "ending_dark": "assets/scenes/ending_dark.png",
+  "ending_beacon": "assets/scenes/ending_beacon.png"
+}

@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#100305">
+  <title>FLANNAN — The Last Light</title>
+  <link rel="stylesheet" href="/static/styles.css">
+  <script src="/static/app.js" defer></script>
+</head>
+<body>
+  <!-- Full-screen atmosphere. Decorative elements stay outside gameplay. -->
+  <div class="haunted-world" aria-hidden="true">
+    <div class="blood-sky"></div>
+    <div class="distant-glow"></div>
+    <div class="ocean"></div>
+
+    <!-- The distant island and lighthouse are drawn with inline SVG. -->
+    <div class="lighthouse-scene">
+      <div class="beam-anchor">
+        <div class="lighthouse-beam"></div>
+        <div class="lamp-halo"></div>
+      </div>
+
+      <svg
+        class="island-art"
+        viewBox="0 0 600 700"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <defs>
+          <linearGradient id="towerShade" x1="0" x2="1">
+            <stop offset="0" stop-color="#080609"/>
+            <stop offset=".55" stop-color="#23151a"/>
+            <stop offset="1" stop-color="#09070b"/>
+          </linearGradient>
+
+          <linearGradient id="rockShade" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#160c12"/>
+            <stop offset="1" stop-color="#030306"/>
+          </linearGradient>
+        </defs>
+
+        <!-- Jagged island silhouette. -->
+        <path
+          d="M0 612 45 595 72 562 115 578 150 530 194 514
+             227 455 262 448 290 419 338 431 363 468
+             405 491 428 541 477 553 508 583 556 590
+             600 620 600 700 0 700Z"
+          fill="url(#rockShade)"
+        />
+
+        <!-- Keepers' building. -->
+        <path d="M333 424V367H422V435Z" fill="#100b10"/>
+        <path d="M321 369 376 337 434 369Z" fill="#060509"/>
+        <path d="M373 398H387V430H373Z" fill="#020204"/>
+        <path d="M401 380H410V394H401Z" fill="#5a2424" opacity=".4"/>
+
+        <!-- Tapered tower and upper balcony. -->
+        <path d="M265 448 281 219H318L336 448Z" fill="url(#towerShade)"/>
+        <path d="M281 219H291L276 448H265Z" fill="#733235" opacity=".16"/>
+        <path d="M273 221H328V230H273Z" fill="#080609"/>
+        <path d="M267 213H334V219H267Z" fill="#1c1117"/>
+        <path d="M269 197V214M281 197V214M321 197V214M332 197V214"
+              stroke="#0a070b" stroke-width="3"/>
+        <path d="M267 198H334" stroke="#0a070b" stroke-width="3"/>
+
+        <!-- Lantern chamber. -->
+        <path d="M282 173H318V212H282Z" fill="#100c12"/>
+        <path d="M286 181H314V204H286Z" fill="#d5a17b" opacity=".58"/>
+        <path d="M295 179V207M306 179V207"
+              stroke="#110b11" stroke-width="3"/>
+        <path d="M276 174 300 151 324 174Z" fill="#08060a"/>
+        <path d="M300 141V153" stroke="#13090d" stroke-width="3"/>
+
+        <!-- Dark windows and doorway. -->
+        <path d="M294 267H304V286H294Z" fill="#020204"/>
+        <path d="M294 330H305V349H294Z" fill="#020204"/>
+        <path d="M289 410Q300 390 311 410V448H289Z" fill="#020204"/>
+
+        <!-- Rock fractures catch a little red ambient light. -->
+        <path d="M290 451 267 493 276 518 248 562M350 480 365 523 351 567"
+              fill="none" stroke="#6e3239" stroke-width="2" opacity=".15"/>
+      </svg>
+    </div>
+
+    <div class="fog fog-back"></div>
+    <div class="fog fog-front"></div>
+    <div class="foreground-shadow"></div>
+    <div class="vignette"></div>
+    <div class="grain"></div>
+  </div>
+
+  <header class="topbar">
+    <a class="wordmark" href="/" aria-label="Flannan home">
+      FLANNAN
+      <span>THE LAST LIGHT</span>
+    </a>
+
+    <div class="header-note">
+      <span class="signal-dot"></span>
+      THE SIGNAL IS STILL ACTIVE
+    </div>
+  </header>
+
+  <main>
+    <section id="menu" class="menu" aria-labelledby="menu-title">
+      <div class="menu-copy">
+        <p class="eyebrow">
+          <span class="small-rule"></span>
+          THREE KEEPERS. NO ANSWER.
+        </p>
+
+        <h1 id="menu-title">
+          SOME LIGHTS<br>
+          SHOULD STAY<br>
+          <span class="blood-word">DARK.</span>
+        </h1>
+
+        <p class="intro">
+          The island is silent.<br>
+          The voice on your radio isn't.
+        </p>
+
+        <button id="start" class="primary" type="button" disabled>
+          <span>ENTER THE DARKNESS</span>
+          <span class="button-arrow" aria-hidden="true">↗</span>
+        </button>
+
+        <div class="menu-details">
+          <span class="detail-cross" aria-hidden="true">+</span>
+          <p>
+            A fictional horror mystery inspired by the
+            Flannan Isles disappearance.
+          </p>
+        </div>
+
+        <p class="content-note">
+          Supernatural horror · Unsettling themes
+        </p>
+      </div>
+
+      <div class="island-caption" aria-hidden="true">
+        <span>THE LIGHTHOUSE</span>
+        <div class="caption-line"></div>
+        <small>Someone is waiting.</small>
+      </div>
+    </section>
+
+    <section id="game" class="game" aria-labelledby="scene-title" hidden>
+      <div class="scene-heading">
+        <p id="scene-label" class="eyebrow">THE INVESTIGATION</p>
+        <button id="leave" class="text-button" type="button">
+          Leave story
+        </button>
+      </div>
+
+      <div class="play-layout">
+        <article class="story-card">
+          <span class="chapter-mark" aria-hidden="true">F /</span>
+          <h2 id="scene-title" tabindex="-1"></h2>
+          <div id="narration" class="narration"></div>
+        </article>
+
+        <aside class="decision-area">
+          <p id="choice-heading" class="eyebrow">WHAT WILL YOU DO?</p>
+          <div
+            id="choices"
+            class="choices"
+            aria-labelledby="choice-heading"
+          ></div>
+
+          <button id="restart" class="primary" type="button" hidden>
+            <span>BEGIN AGAIN</span>
+            <span aria-hidden="true">↗</span>
+          </button>
+
+          <p class="decision-note">
+            The light doesn't reach everything.
+          </p>
+        </aside>
+      </div>
+    </section>
+
+    <div id="feedback" class="feedback" role="status" hidden>
+      <p id="message"></p>
+      <button id="recover" class="text-button" type="button">
+        Refresh current scene
+      </button>
+    </div>
+  </main>
+
+  <footer>
+    <span>FLANNAN / THE LAST LIGHT</span>
+    <span class="footer-warning">DO NOT TRUST EVERY VOICE.</span>
+  </footer>
+</body>
+</html>
