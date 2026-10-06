@@ -1,3 +1,4 @@
+/* Shared colors and page defaults. */
 :root {
   color-scheme: dark;
   --background: #090305;
@@ -34,7 +35,7 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Full-screen environment; no narrow central page container. */
+/* Homepage environment. */
 .haunted-world {
   position: fixed;
   inset: 0;
@@ -86,7 +87,7 @@ body {
   opacity: 0.8;
 }
 
-/* Lighthouse positions and beam origin share the same coordinate space. */
+/* Homepage lighthouse and moving beam. */
 .lighthouse-scene {
   position: absolute;
   width: min(46vw, 720px);
@@ -149,7 +150,7 @@ body {
   animation: lamp-breathe 5s ease-in-out infinite alternate;
 }
 
-/* Fog travels slowly across the island and foreground. */
+/* Homepage fog and shading. */
 .fog {
   position: absolute;
   width: 160%;
@@ -208,7 +209,7 @@ body {
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' filter='url(%23n)' d='M0 0h180v180H0z'/%3E%3C/svg%3E");
 }
 
-/* Navigation and page layout. */
+/* Keep the interface above both homepage and scene backgrounds. */
 .topbar,
 main,
 footer {
@@ -265,6 +266,7 @@ main {
   flex: 1;
 }
 
+/* Homepage typography and layout. */
 .menu {
   min-height: calc(100svh - 150px);
   display: flex;
@@ -317,7 +319,6 @@ h1 {
   text-shadow: 0 3px 30px #b00a2525;
 }
 
-/* Small blood trails, rather than making the text unreadable. */
 .blood-word::before,
 .blood-word::after {
   content: "";
@@ -347,6 +348,7 @@ h1 {
   line-height: 1.7;
 }
 
+/* Shared buttons. */
 button {
   font: inherit;
   cursor: pointer;
@@ -388,6 +390,20 @@ a:focus-visible {
 
 .button-arrow {
   font-size: 20px;
+}
+
+.text-button {
+  padding: 8px 0;
+  border: 0;
+  background: transparent;
+  color: #c1a8ae;
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+
+.text-button:hover {
+  color: #fff0e7;
 }
 
 .menu-details {
@@ -445,7 +461,7 @@ a:focus-visible {
   color: #ad9599;
 }
 
-/* Full-width gameplay with a scrollable narrative panel. */
+/* Gameplay text and choices. */
 .game {
   width: 100%;
   padding: 12px var(--page-padding) 30px;
@@ -556,20 +572,6 @@ h2:focus {
   font-style: italic;
 }
 
-.text-button {
-  padding: 8px 0;
-  border: 0;
-  background: transparent;
-  color: #c1a8ae;
-  font-size: 12px;
-  text-decoration: underline;
-  text-underline-offset: 5px;
-}
-
-.text-button:hover {
-  color: #fff0e7;
-}
-
 .feedback {
   position: relative;
   margin: 20px var(--page-padding);
@@ -600,7 +602,178 @@ footer {
   color: #c5707b;
 }
 
-/* Slow environmental motion, without rapid flashing. */
+/* Full-screen scene backgrounds, inserted by app.js. */
+.scene-stage {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+  background: #090305;
+  opacity: 0;
+  visibility: hidden;
+}
+
+.in-game .scene-stage {
+  opacity: 1;
+  visibility: visible;
+}
+
+.scene-image {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center 43%;
+  background-repeat: no-repeat;
+  opacity: 0;
+  transition: opacity 600ms ease;
+}
+
+.scene-image.is-visible {
+  opacity: 1;
+}
+
+.scene-shade {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  background: linear-gradient(
+    180deg,
+    #05020580 0%,
+    transparent 22%,
+    transparent 40%,
+    #08030799 72%,
+    #080307e8 100%
+  );
+}
+
+/* Pause the homepage's animation during gameplay. */
+.in-game .haunted-world {
+  visibility: hidden;
+}
+
+.in-game .haunted-world * {
+  animation-play-state: paused;
+}
+
+/* Keep story panels low on screen so the illustration remains visible. */
+.in-game .topbar {
+  min-height: 78px;
+  padding-top: 17px;
+  padding-bottom: 17px;
+}
+
+.in-game main {
+  display: flex;
+  flex-direction: column;
+}
+
+.in-game .game {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: calc(100svh - 132px);
+  padding-top: 0;
+  padding-bottom: 20px;
+}
+
+.in-game .scene-heading {
+  margin-bottom: 0;
+}
+
+.in-game .scene-heading > .eyebrow {
+  margin-right: auto;
+}
+
+.in-game .scene-heading .text-button {
+  color: #f1d7d7;
+  text-shadow: 0 2px 8px #000;
+}
+
+.in-game .play-layout {
+  margin-top: auto;
+  padding-top: clamp(100px, 17vh, 210px);
+  grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.85fr);
+  gap: clamp(20px, 3vw, 50px);
+  align-items: end;
+}
+
+.in-game .story-card {
+  padding: clamp(22px, 2.2vw, 34px);
+  max-height: min(45svh, 460px);
+  min-height: 150px;
+  background: linear-gradient(135deg, #11090ee8, #090609d9);
+  border-color: #b4747445;
+  border-top-color: #a32235;
+  box-shadow: 0 15px 50px #0006;
+}
+
+.in-game h2 {
+  margin: 12px 0 18px;
+  font-size: clamp(27px, 2.6vw, 44px);
+}
+
+.in-game .narration {
+  font-size: clamp(16px, 1.15vw, 19px);
+  line-height: 1.7;
+}
+
+.in-game .narration p {
+  margin-bottom: 15px;
+  white-space: pre-line;
+}
+
+.in-game .decision-area {
+  padding-top: 0;
+  max-height: 45svh;
+  overflow-y: auto;
+}
+
+.in-game .choices {
+  margin-top: 12px;
+  gap: 9px;
+}
+
+.in-game .choice {
+  padding: 16px 18px;
+  background: #140a10eb;
+}
+
+.in-game .decision-note {
+  margin: 15px 0 0;
+  font-size: 12px;
+}
+
+.in-game footer {
+  background: #080307bb;
+}
+
+.art-status {
+  color: #edd6d6;
+  font-size: 12px;
+  text-shadow: 0 2px 5px #000;
+}
+
+.in-game .feedback {
+  background: #210b15f5;
+}
+
+/* View artwork mode. JavaScript also disables focus on hidden controls. */
+.artwork-only .play-layout {
+  visibility: hidden;
+}
+
+.artwork-only .scene-shade {
+  background: linear-gradient(
+    #0006,
+    transparent 24%,
+    transparent 85%,
+    #0005
+  );
+}
+
+/* Slow homepage animation. */
 @keyframes sweep {
   0% {
     transform: rotate(-17deg) scaleX(0.6);
@@ -642,6 +815,7 @@ footer {
   }
 }
 
+/* Large screens. */
 @media (min-width: 1800px) {
   .lighthouse-scene {
     right: 8%;
@@ -649,6 +823,7 @@ footer {
   }
 }
 
+/* Tablets and smaller windows. */
 @media (max-width: 900px) {
   .play-layout {
     grid-template-columns: 1fr;
@@ -676,8 +851,28 @@ footer {
   .island-caption {
     display: none;
   }
+
+  .in-game .play-layout {
+    grid-template-columns: 1fr;
+    padding-top: 25svh;
+    gap: 18px;
+  }
+
+  .in-game .story-card {
+    max-height: 38svh;
+  }
+
+  .in-game .decision-area {
+    max-height: none;
+  }
+
+  .in-game .scene-heading {
+    flex-wrap: wrap;
+    gap: 10px 20px;
+  }
 }
 
+/* Phones. */
 @media (max-width: 600px) {
   .topbar {
     min-height: 80px;
@@ -729,8 +924,34 @@ footer {
   .footer-warning {
     display: none;
   }
+
+  .in-game {
+    --page-padding: 18px;
+  }
+
+  .scene-image {
+    background-position: 60% center;
+  }
+
+  .in-game .story-card {
+    padding: 20px;
+  }
+
+  .in-game .choice {
+    min-height: 52px;
+    padding: 14px;
+  }
+
+  .in-game .chapter-mark {
+    display: none;
+  }
+
+  .in-game .scene-heading > .eyebrow {
+    font-size: 8px;
+  }
 }
 
+/* Respect the player's reduced-motion preference. */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
