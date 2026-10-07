@@ -807,5 +807,7 @@
                 </KeyedProperty>
             </KeyedObject>
         </LinearAnimation>
+        <Image name="Lighthouse backdrop" assetId="0:500" x="960.0" y="540.0" originX="0.5" originY="0.5" scaleX="1.1483253588516746" scaleY="1.1483253588516746" />
     </Artboard>
+    <ImageAsset id="0:500" name="Lighthouse" file="background.png" />
 </Rive>
