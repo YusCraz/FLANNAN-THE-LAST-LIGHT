@@ -1,0 +1,131 @@
+<Rive version="1" kind="fragment">
+    <!-- Transparent background so scene artwork can remain visible underneath. -->
+    <Artboard name="Flannan Fog" id="0:2"
+              width="1920" height="1080"
+              styleId="0:5" defaultStateMachineId="0:7">
+
+        <LayoutComponentStyle name="Artboard Style" id="0:5"/>
+
+        <!-- Broad foreground fog, with soft transparent edges. -->
+        <Shape name="Near mist" id="0:20"
+               x="420" y="920" scaleX="1.7" scaleY="0.48">
+            <Ellipse width="1200" height="1200"/>
+            <Fill>
+                <RadialGradient startX="0" startY="0" endX="600" endY="0">
+                    <GradientStop position="0" colorValue="509CA6AF"/>
+                    <GradientStop position="0.45" colorValue="509CA6AF"/>
+                    <GradientStop position="1" colorValue="009CA6AF"/>
+                </RadialGradient>
+            </Fill>
+        </Shape>
+
+        <!-- Middle fog moves in the opposite direction to suggest depth. -->
+        <Shape name="Middle mist" id="0:21"
+               x="1410" y="780" scaleX="1.5" scaleY="0.32">
+            <Ellipse width="1200" height="1200"/>
+            <Fill>
+                <RadialGradient startX="0" startY="0" endX="600" endY="0">
+                    <GradientStop position="0" colorValue="408994A1"/>
+                    <GradientStop position="0.45" colorValue="408994A1"/>
+                    <GradientStop position="1" colorValue="008994A1"/>
+                </RadialGradient>
+            </Fill>
+        </Shape>
+
+        <!-- A thinner, quieter layer sits farther up the scene. -->
+        <Shape name="Distant mist" id="0:22"
+               x="780" y="560" scaleX="2" scaleY="0.2">
+            <Ellipse width="1200" height="1200"/>
+            <Fill>
+                <RadialGradient startX="0" startY="0" endX="600" endY="0">
+                    <GradientStop position="0" colorValue="307D8998"/>
+                    <GradientStop position="0.45" colorValue="307D8998"/>
+                    <GradientStop position="1" colorValue="007D8998"/>
+                </RadialGradient>
+            </Fill>
+        </Shape>
+
+        <!-- Start the fog animation automatically when this machine runs. -->
+        <StateMachine name="Atmosphere" id="0:7">
+            <StateMachineLayer name="Fog" id="0:8">
+                <AnyState x="200" y="-120"/>
+                <ExitState x="400" y="-120"/>
+
+                <EntryState>
+                    <StateTransition stateToId="0:12"/>
+                </EntryState>
+
+                <AnimationState x="200"
+                                animationId="0:6"
+                                id="0:12"/>
+            </StateMachineLayer>
+        </StateMachine>
+
+        <!--
+            1440 frames at 60 fps = a 24-second loop.
+            Matching first and last values prevent a jump when it repeats.
+            Property 13 controls horizontal position.
+            Property 18 controls opacity.
+        -->
+        <LinearAnimation name="Fog Drift" id="0:6"
+                         fps="60" duration="1440" loopValue="loop">
+
+            <!-- Foreground movement and changing density. -->
+            <KeyedObject objectId="0:20">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble frame="0" value="420" interpolationType="linear"/>
+                    <KeyFrameDouble frame="360" value="560" interpolationType="linear"/>
+                    <KeyFrameDouble frame="720" value="640" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1080" value="560" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1440" value="420" interpolationType="linear"/>
+                </KeyedProperty>
+
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble frame="0" value="0.8" interpolationType="linear"/>
+                    <KeyFrameDouble frame="360" value="0.95" interpolationType="linear"/>
+                    <KeyFrameDouble frame="720" value="1" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1080" value="0.95" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1440" value="0.8" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- Middle layer drifts left, then returns. -->
+            <KeyedObject objectId="0:21">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble frame="0" value="1410" interpolationType="linear"/>
+                    <KeyFrameDouble frame="360" value="1260" interpolationType="linear"/>
+                    <KeyFrameDouble frame="720" value="1160" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1080" value="1260" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1440" value="1410" interpolationType="linear"/>
+                </KeyedProperty>
+
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble frame="0" value="0.95" interpolationType="linear"/>
+                    <KeyFrameDouble frame="360" value="0.8" interpolationType="linear"/>
+                    <KeyFrameDouble frame="720" value="0.7" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1080" value="0.8" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1440" value="0.95" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+
+            <!-- Distant movement is smaller and more restrained. -->
+            <KeyedObject objectId="0:22">
+                <KeyedProperty propertyKey="13">
+                    <KeyFrameDouble frame="0" value="780" interpolationType="linear"/>
+                    <KeyFrameDouble frame="360" value="870" interpolationType="linear"/>
+                    <KeyFrameDouble frame="720" value="940" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1080" value="870" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1440" value="780" interpolationType="linear"/>
+                </KeyedProperty>
+
+                <KeyedProperty propertyKey="18">
+                    <KeyFrameDouble frame="0" value="0.65" interpolationType="linear"/>
+                    <KeyFrameDouble frame="360" value="0.8" interpolationType="linear"/>
+                    <KeyFrameDouble frame="720" value="0.9" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1080" value="0.8" interpolationType="linear"/>
+                    <KeyFrameDouble frame="1440" value="0.65" interpolationType="linear"/>
+                </KeyedProperty>
+            </KeyedObject>
+        </LinearAnimation>
+    </Artboard>
+</Rive>
