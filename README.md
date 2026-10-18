@@ -1,94 +1,173 @@
-FLANNAN: THE LAST LIGHT
-Three keepers. No answer. One light that should stay dark.
-A playable browser horror mystery with a Python backend, illustrated first-person scenes, atmospheric audio, and an AI presentation director.
-Play the demo · Source code
-Status: Playable portfolio demo; further development planned.
-Hosted on Render's free plan. The first visit after inactivity may take about a minute to load. Sessions are temporary and reset when the server restarts.
+# FLANNAN: THE LAST LIGHT
 
-The story
-Three lighthouse keepers have disappeared. You arrive as a relief keeper to investigate the station and restore its light—if it is safe.
-Someone answers your radio. They know why you came.
-Explore the island, follow the evidence, and decide which voices to trust. This is a fictional supernatural story inspired by the Flannan Isles disappearance, not a historical reconstruction.
-What works today
-- 18 authored scenes and three endings connected by player choices.
-- Illustrated scene backgrounds with crossfades and next-scene image preloading.
-- Looping horror music, synthesized sea and wind ambience, and separate volume controls.
-- Context-aware AI presentation cues prepared in the background.
-- Immediate scripted fallback whenever AI direction is unavailable or unfinished.
-- Browser sessions, server-side choice validation, and revision checks that reject stale submissions.
-- A terminal version alongside the browser game.
-- A separate Rive CLI fog-animation prototype in animations/.
-The Rive prototype is not yet integrated into the live browser game.
-How the AI works
-The story engine owns scene transitions, available choices, and gameplay state. The model does not invent branches or choose the player's actions.
-While the player reads a scene, the session simulates its available choices using independent copies of game state. One Hugging Face request prepares presentation directions for all possible destinations.
-The director receives recent choices, gameplay values, destination narration, and recent presentation cues. It returns structured JSON containing delivery, sound, effect, and an optional short atmospheric line.
-Pydantic validates the response structure. Additional checks require exactly one result per choice and restrict sound and effect names to each scene's allowed values. Late responses are discarded when the player moves on.
-When the player selects a choice, the game uses a ready direction or immediately falls back to the authored presentation. Gameplay never waits for an AI request to finish.
-The browser preserves authored narration and uses the presentation cues. The terminal version can also show the optional atmospheric line. Structural validation does not guarantee the literary quality of generated text.
-AI engineering concepts used: context management, structured outputs, application-level validation, batched inference, background execution, stale-result protection, and graceful fallback. RAG and model training are not implemented.
-Stack
-Part	Technology
-Backend	Python, FastAPI, Uvicorn
-Frontend	HTML, CSS, JavaScript, Web Audio API
-AI integration	Hugging Face Inference Providers, HTTPX
-Configured model	Qwen/Qwen3-Next-80B-A3B-Instruct:deepinfra
-Response validation	Pydantic
-Animation prototype	Rive CLI and RML
-Hosting	Render
+### [▶ Play the Live Demo](https://flannan-the-last-light.onrender.com/)
 
+> The free server may take about a minute to wake up after inactivity.
 
-Run locally
-Requires Python 3.11 or newer. Commands below use Windows PowerShell.
+An interactive horror mystery inspired by the Flannan Isles lighthouse disappearance. Investigate three missing keepers through illustrated first-person scenes, branching choices, and atmospheric audio—with an AI director adjusting the presentation.
+
+**Status:** Playable demo · Work in progress
+
+## The Story
+
+Three lighthouse keepers have stopped answering messages.
+
+You arrive to investigate the station and restore the light—if it is safe.
+
+Then someone answers your radio.
+
+Explore the island, follow the evidence, and decide which voices to trust. Your choices lead to three possible endings.
+
+*This is a fictional supernatural story, not a historical reconstruction.*
+
+## Features
+
+- **18 illustrated scenes** with branching choices and three endings.
+- **Atmospheric audio:** horror music, synthesized wind, and sea ambience.
+- **Scene transitions** with background crossfades and image preloading.
+- **AI presentation direction** using Qwen through Hugging Face.
+- **Immediate gameplay:** authored fallback when AI responses are unavailable or unfinished.
+- **Server-side validation** of player choices and scene revisions.
+- **Browser and terminal interfaces.**
+- **Rive fog-animation prototype**, awaiting browser integration.
+
+## How the AI Works
+
+The Python story engine controls the plot, available choices, and game state.
+
+While the player reads, a background worker prepares AI presentation cues for the possible next scenes. The model receives relevant context, including recent choices, tension, and previous cues.
+
+Responses are validated with Pydantic and checked against scene-specific sound and effect restrictions.
+
+When the player chooses:
+
+1. The engine validates the choice and updates the state.
+2. Prepared AI cues are used if available.
+3. Otherwise, the authored presentation appears immediately.
+
+The browser preserves the written narration. AI influences presentation rather than inventing new story branches.
+
+**Concepts implemented:** context management, structured outputs, batched inference, background processing, response validation, stale-result protection, and graceful fallback.
+
+## Technology
+
+| Component | Tools |
+|---|---|
+| Backend | Python, FastAPI, Uvicorn |
+| Frontend | HTML, CSS, JavaScript |
+| Audio | Web Audio API and MP3 playback |
+| AI | Qwen through Hugging Face Inference Providers |
+| Validation | Pydantic |
+| HTTP client | HTTPX |
+| Animation prototype | Rive CLI and RML |
+| Hosting | Render |
+
+## Run Locally
+
+Requires **Python 3.11+**.
+
+### 1. Clone and install
+
+Run in Windows PowerShell:
+
+```powershell
 git clone https://github.com/YusCraz/FLANNAN-THE-LAST-LIGHT.git
 Set-Location FLANNAN-THE-LAST-LIGHT
+
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -e .
-AI is optional. To enable it, create .env in the project root:
+```
+
+### 2. Configure AI — optional
+
+Create a `.env` file in the project root:
+
+```dotenv
 HF_TOKEN=your_hugging_face_token
 HF_MODEL=Qwen/Qwen3-Next-80B-A3B-Instruct:deepinfra
-Use a token with permission to call Inference Providers. Provider availability, credits, and rate limits apply separately from hosting. Without configuration, the authored game remains playable.
-Start the browser game:
+```
+
+The token needs permission to call Inference Providers. Provider availability, credits, and rate limits apply.
+
+Without AI configuration, the scripted game remains playable.
+
+**Never commit your `.env` file or put API tokens in frontend code.**
+
+### 3. Start the website
+
+```powershell
 .\.venv\Scripts\python.exe -m uvicorn flannan.api:app --host 127.0.0.1 --port 8000
-Open http://127.0.0.1:8000. Music starts after user interaction; check the sound controls if muted.
-Run the terminal version:
+```
+
+Open **http://127.0.0.1:8000**.
+
+### Terminal version
+
+```powershell
 .\.venv\Scripts\python.exe -m flannan.cli
-Keep .env private. It is ignored by Git; API credentials belong on the server, never in browser JavaScript.
-Project structure
+```
+
+## Project Structure
+
+```text
 src/flannan/
-  state.py       Initial player state
-  story.py       Authored scenes, choices, and endings
-  engine.py      Choice validation and state transitions
-  director.py    Hugging Face requests and response validation
-  session.py     Background preparation and immediate fallback
-  api.py         Browser API, cookies, and session lifecycle
-  cli.py         Terminal interface
-  web/           HTML, CSS, JavaScript, scene images, and audio
+├── state.py       # Initial player state
+├── story.py       # Scenes, choices, and endings
+├── engine.py      # Choice validation and state updates
+├── director.py    # AI requests and response validation
+├── session.py     # Background preparation and fallback
+├── api.py         # Browser API and session management
+├── cli.py         # Terminal interface
+└── web/           # Website, illustrations, and audio
+
 animations/
-  lighthouse/          Rive fog source and generator
-  lighthouse-preview/  Separate artwork-and-fog preview
-Deploy on Render
-Create a Python Web Service connected to this repository.
-Setting	Value
-Branch	main
-Root Directory	Leave empty
-Build Command	pip install -e .
-Instance Type	Free
-Health Check Path	/health
+├── lighthouse/          # Rive fog source and generator
+└── lighthouse-preview/  # Separate animation preview
+```
 
+## Deployment
 
-Start Command (enter in Render, not local PowerShell):
+The frontend and Python backend are hosted together on **Render**.
+
+| Setting | Value |
+|---|---|
+| Build command | `pip install -e .` |
+| Health check | `/health` |
+| Environment variables | `HF_TOKEN`, `HF_MODEL` |
+
+Start command:
+
+```bash
 uvicorn flannan.api:app --host 0.0.0.0 --port $PORT --workers 1 --proxy-headers --forwarded-allow-ips '*'
-Add HF_TOKEN and HF_MODEL as private environment variables to enable AI direction. The app accepts Render's automatically provided RENDER_EXTERNAL_HOSTNAME. Keep one worker because sessions currently live in process memory.
-Limitations and next steps
-This is a small portfolio demo, not a production service. Sessions expire after 30 minutes without API activity; the backend currently allows eight simultaneous sessions. Restarting or redeploying clears progress. Render's free service can sleep after inactivity.
-AI cues are optional and may fall back because of latency, provider errors, or exhausted credits. Scene effects are limited to what the frontend implements; a cue name alone does not create an animation.
-Planned improvements:
-- Integrate the Rive fog prototype into the browser experience.
-- Add persistent sessions and public-API rate limiting.
-- Expand automated coverage for the API and background worker.
-- Review mobile layouts, accessibility, and audio balance across devices.
-Credits
-Created by Aayush Lohani.
-Scene illustrations were created with AI assistance. The project began during the Rive Halloween Challenge 2026 and continues as an independent portfolio project.
-Music: “Darkest Child” — Kevin MacLeod, Incompetech, licensed under Creative Commons Attribution 4.0. Playback loops and volume fades are applied. Music attribution is also available in the game's sound controls.
+```
+
+## Current Limitations
+
+- Render's free service sleeps after inactivity.
+- Sessions are stored in memory and reset on server restart.
+- Sessions expire after 30 minutes without API activity.
+- The backend currently allows eight simultaneous sessions.
+- AI direction depends on provider availability and credits.
+- Rive animation is a separate prototype, not integrated into the live game.
+- RAG and model training are not implemented.
+
+## Next Steps
+
+- Integrate Rive animations into the browser.
+- Add persistent game sessions.
+- Add public-API rate limiting.
+- Expand automated testing.
+- Improve mobile layouts and accessibility.
+
+## Credits
+
+Created by [Aayush Lohani](https://github.com/YusCraz).
+
+Scene illustrations were created with AI assistance.
+
+Music: **“Darkest Child” by Kevin MacLeod**  
+Source: [Incompetech](https://incompetech.com/music/royalty-free/index.html?Search=Search&isrc=USUAN1100783)  
+License: [Creative Commons Attribution 4.0](https://creativecommons.org/licenses/by/4.0/)  
+Modifications: looping playback and volume fades.
+
+Originally started during the Rive Halloween Challenge 2026; continuing as an independent portfolio project.
