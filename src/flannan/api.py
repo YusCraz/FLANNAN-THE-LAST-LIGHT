@@ -2,6 +2,7 @@
 
 import asyncio
 import logging
+import os
 import secrets
 from contextlib import asynccontextmanager, suppress
 from dataclasses import dataclass
@@ -79,8 +80,6 @@ async def lifespan(app):
     """Start cleanup and close sessions when the server stops."""
 
     logging.basicConfig(
-        filename="flannan.log",
-        encoding="utf-8",
         level=logging.WARNING,
         format="%(asctime)s %(levelname)s: %(message)s",
     )
@@ -104,10 +103,16 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# This configuration intentionally serves local development only.
+# Allow this deployment's hostname alongside local development.
+allowed_hosts = ["127.0.0.1", "localhost", "testserver"]
+render_hostname = os.getenv("RENDER_EXTERNAL_HOSTNAME", "").strip()
+
+if render_hostname:
+    allowed_hosts.append(render_hostname)
+
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["127.0.0.1", "localhost", "testserver"],
+    allowed_hosts=allowed_hosts,
 )
 
 # Expose only frontend assets, never the project root or .env.
@@ -182,6 +187,12 @@ def scene_response(record):
             "effect": game.presentation["effect"],
         },
     }
+
+
+@app.get("/health")
+async def health():
+    """Report readiness without creating a game."""
+    return {"status": "ok"}
 
 
 @app.get("/")
